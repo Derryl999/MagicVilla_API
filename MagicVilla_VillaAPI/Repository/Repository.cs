@@ -12,18 +12,26 @@ namespace MagicVilla_VillaAPI.Repository
         public Repository(ApplicationDbContext context)
         {
             this._context = context;
+            //_context.VillaNumbers.Include(u => u.Villa).ToList();
             this.dbSet = context.Set<T>();
         }
-        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null)
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
             if (filter != null)
             {
                 query = query.Where(filter);
             }
+            if(includeProperties != null)
+            {
+                foreach(var property in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(property);
+                }
+            }
             return await query.ToListAsync();
         }
-        public async Task<T> GetAsync(Expression<Func<T, bool>> filter = null, bool tracked = true)
+        public async Task<T> GetAsync(Expression<Func<T, bool>> filter = null, bool tracked = true, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
             if (tracked == false)
@@ -33,6 +41,13 @@ namespace MagicVilla_VillaAPI.Repository
             if (filter != null)
             {
                 query = query.Where(filter);
+            }
+            if(includeProperties != null)
+            {
+                foreach(var property in includeProperties.Split(',' , StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(property);
+                }
             }
             return await query.FirstOrDefaultAsync();
         }

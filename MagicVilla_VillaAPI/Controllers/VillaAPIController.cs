@@ -135,7 +135,7 @@ namespace MagicVilla_VillaAPI.Controllers
             }
             return _response;
         }
-        [HttpPut("id:int", Name = "UpdateVilla")]
+        [HttpPut("{id:int}", Name = "UpdateVilla")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -143,8 +143,6 @@ namespace MagicVilla_VillaAPI.Controllers
         {
             try
             {
-
-
                 if (updateDTO == null || id != updateDTO.Id)
                 {
                     return BadRequest();
