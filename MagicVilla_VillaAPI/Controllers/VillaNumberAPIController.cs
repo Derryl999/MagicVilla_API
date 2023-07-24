@@ -3,6 +3,7 @@ using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.DTO;
 using MagicVilla_VillaAPI.Repository;
 using MagicVilla_VillaAPI.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -10,7 +11,9 @@ using System.Net;
 namespace MagicVilla_VillaAPI.Controllers
 {
     [ApiController]
-    [Route("api/VillaNumberAPI")]
+    [Route("api/v{version:apiVersion}/VillaNumberAPI")]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     public class VillaNumberAPIController:ControllerBase
     {
         private readonly IVillaNumberRepository _dbVillaNumber;
@@ -25,6 +28,7 @@ namespace MagicVilla_VillaAPI.Controllers
             _dbVilla = dbVilla;
         }
         [HttpGet]
+        [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetVillaNumbers()
         {
@@ -42,6 +46,14 @@ namespace MagicVilla_VillaAPI.Controllers
             }
             return _response;
         }
+
+        [MapToApiVersion("2.0")]
+        [HttpGet]
+        public IEnumerable<string> Get()
+        {
+            return new string[] { "Value1", "Value2" };
+        }
+
         [HttpGet("{id:int}" , Name ="GetVillaNumber")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -72,6 +84,8 @@ namespace MagicVilla_VillaAPI.Controllers
             }
             return _response;
         }
+
+        [Authorize(Roles = "admin")]
         [HttpPost(Name = "CreateVillaNumber")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -107,6 +121,8 @@ namespace MagicVilla_VillaAPI.Controllers
             }
             return _response;
         }
+
+        [Authorize(Roles = "admin")]
         [HttpPut("{id:int}", Name = "UpdateVillaNumber")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -136,6 +152,8 @@ namespace MagicVilla_VillaAPI.Controllers
             }
             return _response;
         }
+
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id:int}", Name = "DeleteVillaNumber")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> DeleteVillaNumber(int id)

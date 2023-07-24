@@ -12,7 +12,8 @@ using System.Net;
 namespace MagicVilla_VillaAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     public class VillaAPIController : ControllerBase
     {
         private readonly IVillaRepository _dbVilla;
@@ -24,8 +25,9 @@ namespace MagicVilla_VillaAPI.Controllers
             this.mapper = _mapper;
             this._response = new APIResponse();
         }
-        [Authorize]
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetVillas()
         {
@@ -45,8 +47,9 @@ namespace MagicVilla_VillaAPI.Controllers
             //return Ok(mapper.Map<List<VillaDTO>>(villaList));
         }
 
-        [Authorize(Roles = "admin")]
         [HttpGet("{id:int}", Name = "GetVilla")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -76,6 +79,7 @@ namespace MagicVilla_VillaAPI.Controllers
             }
             return _response;
         }
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -106,9 +110,11 @@ namespace MagicVilla_VillaAPI.Controllers
             }
             return _response;
         }
-        [Authorize(Roles = "Custom")]
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id:int}", Name = "DeleteVilla")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -139,6 +145,7 @@ namespace MagicVilla_VillaAPI.Controllers
             }
             return _response;
         }
+        [Authorize(Roles = "admin")]
         [HttpPut("{id:int}", Name = "UpdateVilla")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
