@@ -16,7 +16,7 @@ namespace MagicVilla_web.Services
             {
                 Type = SD.ApiType.POST,
                 Data = loginRequestDTO,
-                Url = url + "/api/userAuth/login"
+                Url = url + "/api/v1/userAuth/login"
             });
         }
 
@@ -26,7 +26,7 @@ namespace MagicVilla_web.Services
             {
                 Type = SD.ApiType.POST,
                 Data = registrationRequestDTO,
-                Url = url +  "/api/userAuth/register"
+                Url = url + "/api/v1/userAuth/register"
             });
         }
     }

@@ -9,7 +9,7 @@ namespace MagicVilla_VillaAPI.Controllers
 {
     [Route("api/v{version:apiVersion}/userAuth")]
     [ApiController]
-    [ApiVersion("1.0")]
+    [ApiVersionNeutral]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepo;
@@ -19,7 +19,7 @@ namespace MagicVilla_VillaAPI.Controllers
             _userRepo = userRepository;
             _response = new();
         }
-        [HttpPost("Login" , Name = "Login")]
+        [HttpPost("Login", Name = "Login")]
         public async Task<ActionResult<APIResponse>> Login([FromBody] LoginRequestDTO loginRequestDTO)
         {
             var loginResponse = await _userRepo.Login(loginRequestDTO);
@@ -35,7 +35,7 @@ namespace MagicVilla_VillaAPI.Controllers
             _response.Result = loginResponse;
             return Ok(_response);
         }
-        [HttpPost("Register" , Name = "Register")]
+        [HttpPost("Register", Name = "Register")]
         public async Task<ActionResult<APIResponse>> Register(RegistrationRequestDTO registrationRequestDTO)
         {
             bool ifUserNameUnique = _userRepo.IsUniqueUser(registrationRequestDTO.UserName);

@@ -15,16 +15,25 @@ namespace MagicVilla_VillaAPI.Repository
             //_context.VillaNumbers.Include(u => u.Villa).ToList();
             this.dbSet = context.Set<T>();
         }
-        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null,
+            int pageSize = 3, int pageNumber = 1)
         {
             IQueryable<T> query = dbSet;
             if (filter != null)
             {
                 query = query.Where(filter);
             }
-            if(includeProperties != null)
+            if (pageSize > 0)
             {
-                foreach(var property in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                if(pageSize > 100)
+                {
+                    pageSize = 100;
+                }
+                query = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
+            }
+            if (includeProperties != null)
+            {
+                foreach (var property in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries))
                 {
                     query = query.Include(property);
                 }
@@ -42,9 +51,9 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 query = query.Where(filter);
             }
-            if(includeProperties != null)
+            if (includeProperties != null)
             {
-                foreach(var property in includeProperties.Split(',' , StringSplitOptions.RemoveEmptyEntries))
+                foreach (var property in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries))
                 {
                     query = query.Include(property);
                 }
